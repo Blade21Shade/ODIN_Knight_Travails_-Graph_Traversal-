@@ -75,9 +75,12 @@ function process(currentPathList, queue, alreadyProcessed, target, reached) {
     }
     
     // Array for holding new paths - 2
-    let updatedPaths = []; // Holds all the paths created from processing the queue
+        //  The paths here will replace the paths in currentPathList
+    let newPaths = []; // Holds all the paths created from processing the queue
 
     // Master array for holding new queue entries - 3
+        // These values will be pushed into queue when it finishes processing, setting up the next call to process()
+    let newQueue = [];
 
     // For each in queue
         // Create internal array holding queue entries to be used for creation of new paths in 2 - 4
@@ -88,7 +91,15 @@ function process(currentPathList, queue, alreadyProcessed, target, reached) {
         // Take positions from 4 and add to 2 by index list(1)
         // Add this position to alreadyProcessed
 
-    // Replace currentPathList with updatedPaths
+    // Replace currentPathList with newPaths
+    currentPathList.length = 0;
+    for (path of newPaths) {
+        currentPathList.push(path);
+    }
+    // Put newQueue entries into queue
+    for (q of newQueue) {
+        queue.push(q);
+    }
 }
 
 // Returns all positions in the [0,0]-[7,7] range, it doesn't look in a queue
