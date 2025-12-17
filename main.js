@@ -47,14 +47,12 @@ function process(currentPathList, queue, alreadyProcessed, target, reached) {
     for (let i = 0; i < currentPathList.length; i++) {
         let pathEnd = currentPathList[i].at(-1); // Last entry in path
 
-
-
-
-        // See if pathEnd is equal to target!
-        // Involves something with 'found'
-
-
-
+        // See if pathEnd is equal to target
+        if (pathEnd[0] === target[0] && pathEnd[1] === target[1]) {
+            // They are equal
+            // Let the rest of this call to process happen in case multiple paths reached target in the same number of steps
+            reached = true;
+        }
 
         // Add new paths to the list, or add indices to already found paths
             // See if pathEnd is already in the list
