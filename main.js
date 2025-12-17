@@ -2,7 +2,7 @@ function getShortestPath(start, target) {
     let path = [];
 
     // Error checking
-    if (!start instanceof Array || !target instanceof Array) {
+    if (!(start instanceof Array) || !(target instanceof Array)) {
         path.push("getShortestPath - start and/or target not an array, both must be")
         return;
     }
@@ -15,4 +15,4 @@ function getShortestPath(start, target) {
 
 }
 
-getShortestPath(1, 2);
+getShortestPath([], []);
