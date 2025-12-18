@@ -55,7 +55,12 @@ function getShortestPaths(start, target) {
     return validPaths;
 }
 
+// Final testing
 console.log(getShortestPaths([0,0], [5,5]));
+
+
+// NOTE: The testing below was done on old code, none of them will work on the finished code
+// but I wanted to keep them as an example of some test code
 
 // Test for pathListValuesAndIndices logic
 // process([[[0,0],[0,0]], [[6,6],[1,1]], [[0,0],[2,2]], [[0,0],[0,0]], [[1,1],[4,4]], [[7,7],[2,2]], [[3,3]], [[]], [[]], [], [])
@@ -73,7 +78,7 @@ function process(currentPathList, queue, alreadyProcessed, target) {
     
     // Array for last paths and their indices in currentPathList - 1
         // Form: [Final position of path(s), [array of indices for path(s) ending in this position]]
-        // [ [[0,0], [0, 3, 5]], [[7, 7], [2, 4, 6]], [...] ]
+        // Example: [ [[0,0], [0, 3, 5]], [[7, 7], [2, 4, 6]], [...] ]
         // Explain: There are three paths in currentPathList ending in position [0,0], their indices are 0, 3, 5
 
         // This list is used when making new paths while the queue is being processed so currentPathList doesn't have to be searched repeatedly
@@ -83,7 +88,6 @@ function process(currentPathList, queue, alreadyProcessed, target) {
         let pathEnd = currentPathList[i].at(-1); // Last entry in path
 
         // Add new paths to the list, or add indices to already found paths
-            // See if pathEnd is already in the list
         let indexOfPathEnd = -1;
         for (let j = 0; j < pathListValuesAndIndices.length; j++) {
             let path = pathListValuesAndIndices[j][0];
@@ -96,8 +100,6 @@ function process(currentPathList, queue, alreadyProcessed, target) {
         if (indexOfPathEnd === -1) { // Wasn't in the list
             pathListValuesAndIndices.push([pathEnd, [i]]);
         } else {
-            // let pathEndList = pathListValuesAndIndices[indexOfPathEnd][1];
-            // pathEndList.push[i];
             pathListValuesAndIndices[indexOfPathEnd][1].push(i);
         }
     }
@@ -114,10 +116,7 @@ function process(currentPathList, queue, alreadyProcessed, target) {
     for (let i = 0; i < queue.length; i++) {
         let thisPos = queue[i];
         // Create internal array holding queue entries to be used for creation of new paths in 2 - 4
-        // Find next positions
-        // Add positions to 4
         let nextPositions = findPositionsFromPos(thisPos);
-        // Remove positions from 4 that are in alreadyProcessed
         nextPositions = excludePositionsInAlreadyProcessed(nextPositions, alreadyProcessed);
 
         // Add positions from 4 to 3 if they aren't already present
