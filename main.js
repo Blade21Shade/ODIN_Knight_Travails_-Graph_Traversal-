@@ -33,17 +33,20 @@ function getShortestPaths(start, target) {
 }
 
 // Test for pathListValuesAndIndices logic
-// process([[[0,0],[0,0]], [[6,6],[1,1]], [[0,0],[2,2]], [[0,0],[0,0]], [[1,1],[4,4]], [[7,7],[2,2]], [3,3]], [[]], [[]], [], [])
+// process([[[0,0],[0,0]], [[6,6],[1,1]], [[0,0],[2,2]], [[0,0],[0,0]], [[1,1],[4,4]], [[7,7],[2,2]], [[3,3]], [[]], [[]], [], [])
 
 // Test for queue logic making new positions and validating them
 // This test will also check to see if they are correctly put in newQueue
-process([[0,0]], [[0,0]], [[1,2]], [7,7], false); 
+// process([[0,0]], [[0,0]], [[1,2]], [7,7], false); 
+
+// Test for queue logic creating new paths
+process([[[1,1], [0,0]], [[0,0]]], [[0,0]], [], [7,7], false); 
 
 function process(currentPathList, queue, alreadyProcessed, target, reached) {
     // Array for last paths and their indices in currentPathList - 1
-        // Form: [Final entry of path(s), [array of indices for path(s) ending in this path]]
+        // Form: [Final position of path(s), [array of indices for path(s) ending in this position]]
         // [ [[0,0], [0, 3, 5]], [[7, 7], [2, 4, 6]], [...] ]
-        // Explain: Above there are three paths ending in [0,0], their indices in currentPathList are 0, 1, 2
+        // Explain: There are three paths in currentPathList ending in position [0,0], their indices are 0, 3, 5
 
         // This list is used when making new paths while the queue is being processed so currentPathList doesn't have to be searched repeatedly
     let pathListValuesAndIndices = [];
@@ -115,7 +118,32 @@ function process(currentPathList, queue, alreadyProcessed, target, reached) {
         }
 
         // Take positions from 4 and add to 2 by index list(1)
-        
+        // Create new paths by appending positions in nextPositions to paths which end in the pos the queue loop is currently processing
+            // The indices of said paths are held in pathListValuesAndIndices
+
+        // Get the indices of paths in currentPathList whose final entry match this queue loop pos; these are used to create new paths
+            // Eg: The final entry in path [[0,0], [1,1]] will match the queue loop using [1,1], so it's index in currentPathList will be included here
+        let indicesForPath; // pathListValuesAndIndices
+        for (let j = 0; j < pathListValuesAndIndices.length; j++) {
+            let path = pathListValuesAndIndices[j][0];
+            if (path[0] === thisPos[0] && path[1] === thisPos[1]) {
+                indicesForPath = pathListValuesAndIndices[j][1];
+                break;
+            }
+        }
+
+        // Create new paths from nextPositions and indicesForPath, add them to newPaths
+        for (let j = 0; j < nextPositions.length; j++) {
+            let pos = nextPositions[j];
+            for (let k = 0; k < indicesForPath.length; k++) {
+                    // GPT was used to create copying because I wasn't sure if I could use ... or slice() directly
+                    // It created the .map(...) stuff, the destructuring of the first [x,y] took some explaining for me to get
+                let oldPath = currentPathList[indicesForPath[k]].map(([x,y]) => [x,y]); // Copy of the path, not referenced
+                oldPath.push(pos);
+                newPaths.push(oldPath);
+            }
+        }
+
         // Add this position to alreadyProcessed
         alreadyProcessed.push(thisPos);
     }
@@ -203,7 +231,7 @@ function excludePositionsInAlreadyProcessed(positions, alreadyProcessed) {
         let pos = positions[i];
         for (let j = 0; j < alreadyProcessed.length; j++) {
             let apPos = alreadyProcessed[j];
-            if (pos[0] === apPos[0] && pos[1] === apPos[1]) { // If the position isn't in alreadyProcessed it is valid to be processed
+            if (pos[0] === apPos[0] && pos[1] === apPos[1]) { // If the position is in alreadyProcessed it is invalid to be processed
                 addToArr = false;
                 break;
             }
