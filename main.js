@@ -36,6 +36,7 @@ function getShortestPaths(start, target) {
 // process([[[0,0],[0,0]], [[6,6],[1,1]], [[0,0],[2,2]], [[0,0],[0,0]], [[1,1],[4,4]], [[7,7],[2,2]], [3,3]], [[]], [[]], [], [])
 
 // Test for queue logic making new positions and validating them
+// This test will also check to see if they are correctly put in newQueue
 process([[0,0]], [[0,0]], [[1,2]], [7,7], false); 
 
 function process(currentPathList, queue, alreadyProcessed, target, reached) {
@@ -96,9 +97,27 @@ function process(currentPathList, queue, alreadyProcessed, target, reached) {
         nextPositions = excludePositionsInAlreadyProcessed(nextPositions, alreadyProcessed);
 
         // Add positions from 4 to 3 if they aren't already present
+        let addToQueue = true;
+        for (let j = 0; j < nextPositions.length; j++) {
+            let pos = nextPositions[i];
+            for (let k = 0; k < newQueue.length; k++) {
+                let nqPos = newQueue[k];
+                if (pos[0] === nqPos[0] && pos[1] === nqPos[1]) {
+                    addToQueue = false;
+                    break;
+                }
+            }
+            if (addToQueue) {
+                newQueue.push(pos);
+            } else {
+                addToQueue = true;
+            }
+        }
+
         // Take positions from 4 and add to 2 by index list(1)
+        
         // Add this position to alreadyProcessed
-        let a = 1; // Breakpoint placeholder
+        alreadyProcessed.push(thisPos);
     }
 
     // Replace currentPathList with newPaths
