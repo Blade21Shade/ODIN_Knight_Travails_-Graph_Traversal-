@@ -29,7 +29,17 @@ function getShortestPaths(start, target) {
 
     let isProcessingComplete = false;
 
+    let runCounter = 0;
     while (!isProcessingComplete) {
+        for (const path of paths) {
+            let pathString = "";
+            for (let i = 0; i < path.length; i++) {
+                pathString += `[${path[i]}] `;
+            }
+            console.log(`${runCounter}: ${pathString}`);
+        }
+        runCounter++;
+        console.log("");
         isProcessingComplete = process(paths, queue, processed, target);
     }
     
@@ -45,7 +55,7 @@ function getShortestPaths(start, target) {
     return validPaths;
 }
 
-getShortestPaths([0,0], [3,3]);
+console.log(getShortestPaths([0,0], [5,5]));
 
 // Test for pathListValuesAndIndices logic
 // process([[[0,0],[0,0]], [[6,6],[1,1]], [[0,0],[2,2]], [[0,0],[0,0]], [[1,1],[4,4]], [[7,7],[2,2]], [[3,3]], [[]], [[]], [], [])
@@ -77,7 +87,7 @@ function process(currentPathList, queue, alreadyProcessed, target) {
         let indexOfPathEnd = -1;
         for (let j = 0; j < pathListValuesAndIndices.length; j++) {
             let path = pathListValuesAndIndices[j][0];
-            if (path[0] === pathEnd[0] && path[1] === path[1]) {
+            if (path[0] === pathEnd[0] && path[1] === pathEnd[1]) {
                 indexOfPathEnd = j;
                 break;
             }
