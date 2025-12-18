@@ -15,22 +15,37 @@ function getShortestPaths(start, target) {
         throw new Error("getShortestPath - start and/or target have value(s) outside 0-7 - both must have values (inclusive) 0-7");
     }
 
-    // This will hold all paths with the shortest length
-    let paths = [];
+    // See if start and target are equal
+    if (start[0] === target[0] && start[1] === target[1]) {
+        return [start];
+    }
+
+    // This will hold all paths
+    let paths = [[start]];
     
     // Breadth first search variables
     let queue = [start];
     let processed = [];
 
-    let reached = false;
+    let isProcessingComplete = false;
 
-    while (!reached) {
-        process([start], queue, processed, target, found);
+    while (!isProcessingComplete) {
+        isProcessingComplete = process(paths, queue, processed, target);
     }
     
-
     // Find valid paths (end in target)
+    let validPaths = [];
+    for (const path of paths) {
+        let finalPos = path.at(-1);
+        if (finalPos[0] === target[0] && finalPos[1] === target[1]) {
+            validPaths.push(path);
+        }
+    }
+
+    return validPaths;
 }
+
+getShortestPaths([0,0], [3,3]);
 
 // Test for pathListValuesAndIndices logic
 // process([[[0,0],[0,0]], [[6,6],[1,1]], [[0,0],[2,2]], [[0,0],[0,0]], [[1,1],[4,4]], [[7,7],[2,2]], [[3,3]], [[]], [[]], [], [])
@@ -40,9 +55,12 @@ function getShortestPaths(start, target) {
 // process([[0,0]], [[0,0]], [[1,2]], [7,7], false); 
 
 // Test for queue logic creating new paths
-process([[[1,1], [0,0]], [[0,0]]], [[0,0]], [], [7,7], false); 
+// process([[[1,1], [0,0]], [[0,0]]], [[0,0]], [], [7,7], false); 
 
-function process(currentPathList, queue, alreadyProcessed, target, reached) {
+function process(currentPathList, queue, alreadyProcessed, target) {
+    // Once the target is found this will be set to stop further calls to process()
+    let targetFound = false;
+    
     // Array for last paths and their indices in currentPathList - 1
         // Form: [Final position of path(s), [array of indices for path(s) ending in this position]]
         // [ [[0,0], [0, 3, 5]], [[7, 7], [2, 4, 6]], [...] ]
@@ -53,13 +71,6 @@ function process(currentPathList, queue, alreadyProcessed, target, reached) {
     
     for (let i = 0; i < currentPathList.length; i++) {
         let pathEnd = currentPathList[i].at(-1); // Last entry in path
-
-        // See if pathEnd is equal to target
-        if (pathEnd[0] === target[0] && pathEnd[1] === target[1]) {
-            // They are equal
-            // Let the rest of this call to process happen in case multiple paths reached target in the same number of steps
-            reached = true;
-        }
 
         // Add new paths to the list, or add indices to already found paths
             // See if pathEnd is already in the list
@@ -91,7 +102,7 @@ function process(currentPathList, queue, alreadyProcessed, target, reached) {
 
     // For each in queue
     for (let i = 0; i < queue.length; i++) {
-        let thisPos = queue.pop();
+        let thisPos = queue[i];
         // Create internal array holding queue entries to be used for creation of new paths in 2 - 4
         // Find next positions
         // Add positions to 4
@@ -102,7 +113,7 @@ function process(currentPathList, queue, alreadyProcessed, target, reached) {
         // Add positions from 4 to 3 if they aren't already present
         let addToQueue = true;
         for (let j = 0; j < nextPositions.length; j++) {
-            let pos = nextPositions[i];
+            let pos = nextPositions[j];
             for (let k = 0; k < newQueue.length; k++) {
                 let nqPos = newQueue[k];
                 if (pos[0] === nqPos[0] && pos[1] === nqPos[1]) {
@@ -153,10 +164,19 @@ function process(currentPathList, queue, alreadyProcessed, target, reached) {
     for (path of newPaths) {
         currentPathList.push(path);
     }
-    // Put newQueue entries into queue
+    // Replace queue with newQueue
+    queue.length = 0;
     for (q of newQueue) {
         queue.push(q);
+
+        // Check if the target is in the updated queue; if so, it is in the paths made this process() call, so we can stop processing
+        if (q[0] === target[0] && q[1] === target[1]) {
+            targetFound = true;
+        }
     }
+
+    // If the target was found, processing is finished, otherwise process() will be called again
+    return targetFound;
 }
 
 // Returns all positions in the [0,0]-[7,7] range, it doesn't look in a queue
