@@ -35,6 +35,9 @@ function getShortestPaths(start, target) {
 // Test for pathListValuesAndIndices logic
 // process([[[0,0],[0,0]], [[6,6],[1,1]], [[0,0],[2,2]], [[0,0],[0,0]], [[1,1],[4,4]], [[7,7],[2,2]], [3,3]], [[]], [[]], [], [])
 
+// Test for queue logic making new positions and validating them
+process([[0,0]], [[0,0]], [[1,2]], [7,7], false); 
+
 function process(currentPathList, queue, alreadyProcessed, target, reached) {
     // Array for last paths and their indices in currentPathList - 1
         // Form: [Final entry of path(s), [array of indices for path(s) ending in this path]]
@@ -83,13 +86,20 @@ function process(currentPathList, queue, alreadyProcessed, target, reached) {
     let newQueue = [];
 
     // For each in queue
+    for (let i = 0; i < queue.length; i++) {
+        let thisPos = queue.pop();
         // Create internal array holding queue entries to be used for creation of new paths in 2 - 4
         // Find next positions
         // Add positions to 4
+        let nextPositions = findPositionsFromPos(thisPos);
         // Remove positions from 4 that are in alreadyProcessed
+        nextPositions = excludePositionsInAlreadyProcessed(nextPositions, alreadyProcessed);
+
         // Add positions from 4 to 3 if they aren't already present
         // Take positions from 4 and add to 2 by index list(1)
         // Add this position to alreadyProcessed
+        let a = 1; // Breakpoint placeholder
+    }
 
     // Replace currentPathList with newPaths
     currentPathList.length = 0;
@@ -116,11 +126,11 @@ function findPositionsFromPos(pos) {
         let h = 1;
         let v = 2;
 
-        if (i > 2) {
+        if (i > 1) {
             h = -1;
         }
 
-        if (i % 0 === 1) {
+        if (i % 2 === 1) {
             v = -2;
         }
 
@@ -145,11 +155,11 @@ function findPositionsFromPos(pos) {
         let h = 2;
         let v = 1;
 
-        if (i > 2) {
+        if (i > 1) {
             h = -2;
         }
 
-        if (i % 0 === 1) {
+        if (i % 2 === 1) {
             v = -1;
         }
 
@@ -165,4 +175,26 @@ function findPositionsFromPos(pos) {
     }
 
     return toReturn;
+}
+
+function excludePositionsInAlreadyProcessed(positions, alreadyProcessed) {
+    let validPos = [];
+    let addToArr = true;
+    for (let i = 0; i < positions.length; i++) {
+        let pos = positions[i];
+        for (let j = 0; j < alreadyProcessed.length; j++) {
+            let apPos = alreadyProcessed[j];
+            if (pos[0] === apPos[0] && pos[1] === apPos[1]) { // If the position isn't in alreadyProcessed it is valid to be processed
+                addToArr = false;
+                break;
+            }
+        }
+        if (addToArr) {
+            validPos.push(pos);
+        } else {
+            addToArr = true;
+        }
+    }
+
+    return validPos;
 }
