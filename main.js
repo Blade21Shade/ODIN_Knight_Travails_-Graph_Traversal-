@@ -77,10 +77,18 @@ function process(currentPathList, queue, alreadyProcessed, target) {
     let targetFound = false;
     
     // Array for last paths and their indices in currentPathList - 1
-        // Form: [Final position of path(s), [array of indices for path(s) ending in this position]]
-        // Example: [ [[0,0], [0, 3, 5]], [[7, 7], [2, 4, 6]], [...] ]
-        // Explain: There are three paths in currentPathList ending in position [0,0], their indices are 0, 3, 5
-
+    /* Form explanation
+    Form: A 3D array which holds pairs of positions and the indices of paths in currentPathList which end in that position 
+    PseudoEx: [
+            [[pathEnd], [i0, i1, i2]],
+            [[pathEnd], [i3, i4, i5]]
+            ]
+    Example: [
+            [[0,0], [0, 3, 5]],
+            [[7, 7], [2, 4, 6]],
+            ...]
+    Explain: For position [0,0], there are three paths in currentPathList ending in that position, their indices are 0, 3, 5
+    */
         // This list is used when making new paths while the queue is being processed so currentPathList doesn't have to be searched repeatedly
     let pathListValuesAndIndices = [];
     
