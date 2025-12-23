@@ -196,65 +196,50 @@ function process(currentPathList, queue, alreadyProcessed, target) {
     return targetFound;
 }
 
-// Returns all positions in the [0,0]-[7,7] range, it doesn't look in a queue
+// Returns all positions in the [0,0]-[7,7] range
 function findPositionsFromPos(pos) {
     let toReturn = [];
-    
-    // Find positions with 1 horizontal change and 2 vertical change
+
+    // Positions to check
     // [pos[0]+1, pos[1]+2];
     // [pos[0]+1, pos[1]-2];
     // [pos[0]-1, pos[1]+2];
     // [pos[0]-1, pos[1]-2];
-    for (let i = 0; i < 4; i++) {
-        // Create position to check
-        let h = 1;
-        let v = 2;
-
-        if (i > 1) {
-            h = -1;
-        }
-
-        if (i % 2 === 1) {
-            v = -2;
-        }
-
-        let thisPos = [pos[0] + h, pos[1] + v];
-
-        // See if position is valid
-        if (thisPos[0] > 7 || thisPos[0] < 0 || thisPos[1] > 7 || thisPos[1] < 0 ) {
-            // Invalid
-            continue;
-        } else {
-            toReturn.push(thisPos);
-        }
-    }
-
-    // Find positions with 2 in horizontal change and 1 vertical change
     // [pos[0]+2, pos[1]+1];
     // [pos[0]+2, pos[1]-1];
     // [pos[0]-2, pos[1]+1];
     // [pos[0]-2, pos[1]-1];
+
     for (let i = 0; i < 4; i++) {
-        // Create position to check
-        let h = 2;
-        let v = 1;
+        // 1 is for positions with 1 horizontal change and 2 vertical change
+        let h1 = 1;
+        let v1 = 2;
+        // 2 is for positions with 2 horizontal change and 1 vertical change
+        let h2 = 2;
+        let v2 = 1;
+
 
         if (i > 1) {
-            h = -2;
+            h1 = -1;
+            h2 = -2;
         }
 
         if (i % 2 === 1) {
-            v = -1;
+            v1 = -2;
+            v2 = -1;
         }
 
-        let thisPos = [pos[0] + h, pos[1] + v];
+        let pos1 = [pos[0] + h1, pos[1] + v1];
+        let pos2 = [pos[0] + h2, pos[1] + v2];
 
-        // See if position is valid
-        if (thisPos[0] > 7 || thisPos[0] < 0 || thisPos[1] > 7 || thisPos[1] < 0 ) {
-            // Invalid
-            continue;
-        } else {
-            toReturn.push(thisPos);
+        // Add pos1 if valid
+        if (pos1[0] <= 7 && pos1[0] >= 0 && pos1[1] <= 7 && pos1[1] >= 0 ) {
+            toReturn.push(pos1);
+        }
+
+        // Add pos2 if valid
+        if (pos2[0] <= 7 && pos2[0] >= 0 && pos2[1] <= 7 && pos2[1] >= 0 ) {
+            toReturn.push(pos2);
         }
     }
 
