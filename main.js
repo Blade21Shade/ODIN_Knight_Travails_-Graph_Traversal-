@@ -143,22 +143,22 @@ function process(currentPathList, queue, alreadyProcessed, target) {
 
         // Get the indices of paths in currentPathList whose final entry match this queue loop pos; these are used to create new paths
             // Eg: The final entry in path [[0,0], [1,1]] will match the queue loop using [1,1], so it's index in currentPathList will be included here
-        let indicesForPath; // pathListValuesAndIndices
+        let indicesOfFinalPositions; // pathListValuesAndIndices
         for (let j = 0; j < pathListValuesAndIndices.length; j++) {
             let path = pathListValuesAndIndices[j][0];
             if (path[0] === thisPos[0] && path[1] === thisPos[1]) {
-                indicesForPath = pathListValuesAndIndices[j][1];
+                indicesOfFinalPositions = pathListValuesAndIndices[j][1];
                 break;
             }
         }
 
-        // Create new paths from nextPositions and indicesForPath, add them to newPaths
+        // Create new paths from nextPositions and indicesOfFinalPositions, add them to newPaths
         for (let j = 0; j < nextPositions.length; j++) {
             let pos = nextPositions[j];
-            for (let k = 0; k < indicesForPath.length; k++) {
+            for (let k = 0; k < indicesOfFinalPositions.length; k++) {
                     // GPT was used to create copying because I wasn't sure if I could use ... or slice() directly
                     // It created the .map(...) stuff, the destructuring of the first [x,y] took some explaining for me to get
-                let oldPath = currentPathList[indicesForPath[k]].map(([x,y]) => [x,y]); // Copy of the path, not referenced
+                let oldPath = currentPathList[indicesOfFinalPositions[k]].map(([x,y]) => [x,y]); // Copy of the path, not referenced
                 oldPath.push(pos);
                 newPaths.push(oldPath);
             }
